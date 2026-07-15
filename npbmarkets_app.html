@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPB Markets — Обучение Форекс</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg:          #060E1A;
+    --card:        #0C1929;
+    --card2:       #102035;
+    --border:      #173050;
+    --cyan:        #00C8C8;
+    --cyan-light:  #3DEDEC;
+    --cyan-dim:    rgba(0,200,200,.07);
+    --cyan-mid:    rgba(0,200,200,.15);
+    --white:       #E8F2FB;
+    --gray:        #52708A;
+    --gray-light:  #8CAABF;
+    --green:       #00CC88;
+    --green-dim:   rgba(0,204,136,.08);
+    --red:         #FF4E6A;
+    --red-dim:     rgba(255,78,106,.08);
+    --yellow:      #FFB830;
+    --yellow-dim:  rgba(255,184,48,.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--white); line-height:1.6; }
+
+  /* ═══════════════════════════════
+     TICKER BAR
+  ═══════════════════════════════ */
+  .ticker-bar {
+    height: 30px; background: var(--card);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden; position: relative;
+    display: flex; align-items: center;
+  }
+  .ticker-track {
+    display: flex; gap: 56px; align-items: center;
+    white-space: nowrap; animation: tick 28s linear infinite;
+    font-size: 11.5px; font-weight: 500; color: var(--gray-light);
+  }
+  .ticker-track .tp { color:var(--white); font-weight:700; margin-right:5px; font-size:11px; }
+  .ticker-track .up  { color:var(--green); }
+  .ticker-track .dn  { color:var(--red); }
+
+  @keyframes tick {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ═══════════════════════════════
+     NAV
+  ═══════════════════════════════ */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,14,26,.93); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px; display: flex; align-items: center; gap: 36px;
+    height: 54px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 9px;
+    cursor: pointer; text-decoration: none; flex-shrink: 0;
+  }
+  .nav-logo-mark {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 13px; color: var(--bg);
+    letter-spacing: -.5px;
+  }
+  .nav-logo-text { font-size: 14px; font-weight: 700; }
+  .nav-logo-text em { font-style: normal; color: var(--cyan); }
+
+  .nav-tabs { display: flex; gap: 2px; flex: 1; }
+  .nav-tab {
+    padding: 6px 13px; border-radius: 6px;
+    font-size: 13px; font-weight: 500; color: var(--gray);
+    cursor: pointer; border: none; background: none;
+    transition: all .18s; font-family: inherit;
+  }
+  .nav-tab:hover { color: var(--white); }
+  .nav-tab.active { background: var(--card); color: var(--white); }
+
+  .nav-cta {
+    margin-left: auto; padding: 7px 18px; border-radius: 8px;
+    background: var(--cyan); color: var(--bg);
+    font-weight: 700; font-size: 13px; border: none;
+    cursor: pointer; transition: opacity .2s; font-family: inherit;
+    flex-shrink: 0;
+  }
+  .nav-cta:hover { opacity: .84; }
+
+  /* ═══════════════════════════════
+     SECTION SWITCH
+  ═══════════════════════════════ */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ═══════════════════════════════
+     HOME / ONBOARDING
+  ═══════════════════════════════ */
+  .hero {
+    min-height: calc(100vh - 84px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px 20px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; top: 30%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 700px; height: 500px; pointer-events: none;
+    background: radial-gradient(ellipse,rgba(0,200,200,.055) 0%,transparent 68%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 680px; width: 100%; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 14px; border-radius: 20px;
+    border: 1px solid rgba(0,200,200,.28);
+    background: rgba(0,200,200,.05);
+    color: var(--cyan); font-size: 11.5px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--cyan);
+    animation: pulseAnim 2s ease-in-out infinite;
+  }
+  @keyframes pulseAnim {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:.3; transform:scale(.8); }
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 5.5vw, 58px);
+    font-weight: 900; line-height: 1.08;
+    margin-bottom: 18px; letter-spacing: -2px;
+  }
+  .hero h1 em { font-style: normal; color: var(--cyan); }
+
+  .hero-sub {
+    font-size: 16px; color: var(--gray-light);
+    margin-bottom: 36px; line-height: 1.65;
+    max-width: 460px; margin-left: auto; margin-right: auto;
+  }
+
+  .hero-stats {
+    display: flex; gap: 28px; justify-content: center;
+    margin-bottom: 44px; flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-n {
+    font-size: 24px; font-weight: 900; letter-spacing: -1px;
+  }
+  .hero-stat-n em { font-style: normal; color: var(--cyan); font-size: 16px; }
+  .hero-stat-l { font-size: 11px; color: var(--gray); margin-top: 1px; }
+
+  /* ── ONBOARDING CARD ── */
+  .ob-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px;
+    max-width: 500px; margin: 0 auto; text-align: left;
+  }
+  .ob-step-lbl {
+    font-size: 10.5px; font-weight: 700; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 8px;
+  }
+  .ob-q { font-size: 19px; font-weight: 700; margin-bottom: 22px; line-height: 1.3; }
+
+  .ob-progress { display: flex; gap: 5px; margin-bottom: 26px; }
+  .ob-dot {
+    height: 3px; border-radius: 2px; flex: 1;
+    background: var(--border); transition: background .3s;
+  }
+  .ob-dot.done { background: var(--cyan); }
+
+  .ob-opts { display: flex; flex-direction: column; gap: 8px; }
+  .ob-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 15px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--card2);
+    cursor: pointer; transition: all .18s;
+    font-size: 14px; font-weight: 500; font-family: inherit;
+    color: var(--white); width: 100%; text-align: left;
+  }
+  .ob-opt:hover { border-color: var(--cyan); background: var(--cyan-dim); }
+  .ob-opt.sel { border-color: var(--cyan); background: var(--cyan-dim); color: var(--cyan); }
+  .ob-radio {
+    width: 17px; height: 17px; border-radius: 50%;
+    border: 2px solid var(--border); flex-shrink: 0;
+    transition: all .18s; display: flex; align-items: center; justify-content: center;
+  }
+  .ob-opt.sel .ob-radio { background: var(--cyan); border-color: var(--cyan); }
+  .ob-radio::after {
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--bg); display:none;
+  }
+  .ob-opt.sel .ob-radio::after { display: block; }
+
+  .btn-primary {
+    width: 100%; margin-top: 20px; padding: 14px; border-radius: 10px;
+    background: var(--cyan); color: var(--bg);
+    font-weight: 800; font-size: 15px; border: none;
+    cursor: pointer; transition: opacity .2s; font-family: inherit;
+  }
+  .btn-primary:hover { opacity: .86; }
+  .btn-primary:disabled { opacity: .32; cursor: default; }
+
+  /* ═══════════════════════════════
+     PAGE LAYOUT
+  ═══════════════════════════════ */
+  .page { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+  .page-header { margin-bottom: 36px; }
+  .page-header h2 {
+    font-size: 27px; font-weight: 800; margin-bottom: 5px; letter-spacing: -.5px;
+  }
+  .page-header p { color: var(--gray); font-size: 14px; }
+
+  .section-label {
+    font-size: 10.5px; font-weight: 700; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px;
+  }
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* ═══════════════════════════════
+     COURSES PAGE
+  ═══════════════════════════════ */
+  .user-progress {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 18px 22px;
+    display: flex; align-items: center; gap: 18px;
+    margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .user-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--cyan-dim); border: 2px solid var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: var(--cyan); flex-shrink: 0;
+  }
+  .user-info { flex: 1; min-width: 120px; }
+  .user-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .user-info p { font-size: 12px; color: var(--gray); }
+  .xp-section { flex: 2; min-width: 160px; }
+  .xp-lbl { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray); margin-bottom: 6px; }
+  .xp-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .xp-fill {
+    height: 100%; width: 0; border-radius: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--cyan-light));
+    transition: width 1s ease;
+  }
+  .user-stat-row { display: flex; gap: 20px; }
+  .user-stat { text-align: center; }
+  .user-stat-n { font-size: 18px; font-weight: 800; }
+  .user-stat-l { font-size: 10px; color: var(--gray); }
+
+  .chapters { display: flex; flex-direction: column; gap: 10px; }
+  .ch-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 13px; padding: 18px 22px;
+    display: flex; align-items: center; gap: 18px;
+    cursor: pointer; transition: all .22s;
+  }
+  .ch-card:hover { border-color: var(--cyan); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,200,200,.05); }
+  .ch-card.locked { opacity: .48; cursor: not-allowed; }
+  .ch-card.locked:hover { border-color: var(--border); transform: none; box-shadow: none; }
+  .ch-card.done  { border-left: 3px solid var(--green); }
+  .ch-card.curr  { border-color: rgba(0,200,200,.4); background: var(--card2); }
+
+  .ch-num {
+    width: 46px; height: 46px; border-radius: 11px;
+    background: var(--card2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: var(--gray); flex-shrink: 0;
+  }
+  .ch-card.curr .ch-num { background: var(--cyan-dim); border-color: rgba(0,200,200,.3); color: var(--cyan); }
+  .ch-card.done .ch-num { background: var(--green-dim); border-color: rgba(0,204,136,.3); color: var(--green); }
+
+  .ch-info { flex: 1; }
+  .ch-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .ch-sub { font-size: 12px; color: var(--gray); }
+  .ch-bar { margin-top: 8px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .ch-fill { height: 100%; border-radius: 2px; background: var(--cyan); }
+  .done .ch-fill { background: var(--green); }
+
+  .ch-meta { text-align: right; flex-shrink: 0; }
+  .ch-lessons { font-size: 13px; font-weight: 600; }
+  .ch-time { font-size: 11px; color: var(--gray); margin-top: 1px; }
+  .ch-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; margin-top: 5px;
+  }
+  .b-curr  { background: var(--cyan-mid); color: var(--cyan); }
+  .b-done  { background: var(--green-dim); color: var(--green); }
+  .b-lock  { background: var(--card2); color: var(--gray); }
+
+  .stat-trio {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 14px;
+  }
+  .stat-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; padding: 18px; text-align: center;
+  }
+  .stat-box-n { font-size: 26px; font-weight: 900; color: var(--cyan); letter-spacing: -1px; }
+  .stat-box-l { font-size: 11px; color: var(--gray); margin-top: 3px; }
+
+  /* ═══════════════════════════════
+     LESSON PAGE
+  ═══════════════════════════════ */
+  .lesson-bar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 12px 24px; display: flex; align-items: center; gap: 14px;
+  }
+  .btn-back {
+    background: none; border: 1px solid var(--border);
+    color: var(--gray); padding: 6px 14px; border-radius: 7px;
+    font-size: 12px; cursor: pointer; transition: all .18s; font-family: inherit;
+    flex-shrink: 0;
+  }
+  .btn-back:hover { border-color: var(--gray); color: var(--white); }
+  .lesson-pbar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .lesson-pfill {
+    height: 100%; width: 0; border-radius: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--cyan-light));
+    transition: width 1s ease;
+  }
+  .lesson-ptxt { font-size: 11.5px; color: var(--gray); flex-shrink: 0; }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 40px 24px; }
+  .lesson-chapter {
+    font-size: 10.5px; font-weight: 700; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 7px;
+  }
+  .lesson-title {
+    font-size: 26px; font-weight: 800; margin-bottom: 28px;
+    letter-spacing: -.5px; line-height: 1.2;
+  }
+
+  .block { margin-bottom: 32px; }
+  .block h3 { font-size: 17px; font-weight: 700; margin-bottom: 11px; }
+  .block p {
+    font-size: 14.5px; color: var(--gray-light); line-height: 1.72; margin-bottom: 12px;
+  }
+
+  .hl-box {
+    background: var(--cyan-dim); border: 1px solid rgba(0,200,200,.18);
+    border-left: 3px solid var(--cyan); border-radius: 10px;
+    padding: 14px 18px; margin: 14px 0;
+  }
+  .hl-box-lbl {
+    font-size: 10px; font-weight: 700; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: .8px; margin-bottom: 7px;
+  }
+  .hl-box p { font-size: 13.5px; color: var(--gray-light); margin: 0; line-height: 1.65; }
+
+  .pairs-tbl { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+  .pairs-tbl th {
+    text-align: left; padding: 7px 12px;
+    color: var(--gray); font-weight: 600; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: .8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pairs-tbl td {
+    padding: 9px 12px; border-bottom: 1px solid rgba(23,48,80,.5);
+    color: var(--gray-light);
+  }
+  .pairs-tbl td:first-child { color: var(--white); font-weight: 700; font-size: 12.5px; }
+  .pairs-tbl td:last-child { color: var(--cyan); font-weight: 600; }
+  .pairs-tbl tr:hover td { background: var(--cyan-dim); }
+
+  .benefit-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin: 14px 0;
+  }
+  .benefit-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 13px;
+  }
+  .benefit-ico { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .benefit-txt { font-size: 12.5px; color: var(--gray-light); line-height: 1.5; }
+  .benefit-txt strong { color: var(--white); font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* Quiz */
+  .quiz-block {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 13px; padding: 22px; margin: 26px 0;
+  }
+  .quiz-lbl {
+    font-size: 10.5px; font-weight: 700; color: var(--yellow);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 9px;
+  }
+  .quiz-q { font-size: 16px; font-weight: 700; margin-bottom: 14px; line-height: 1.35; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 7px; }
+  .quiz-opt {
+    padding: 10px 13px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: var(--card);
+    cursor: pointer; font-size: 13.5px; color: var(--gray-light);
+    transition: all .18s; font-family: inherit; text-align: left; width: 100%;
+  }
+  .quiz-opt:hover { border-color: var(--gray); color: var(--white); }
+  .quiz-opt.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+  .quiz-opt.wrong   { border-color: var(--red);   background: var(--red-dim);   color: var(--red); }
+
+  .quiz-result { display: none; margin-top: 11px; padding: 11px 15px; border-radius: 8px; font-size: 13.5px; line-height: 1.55; }
+  .quiz-result.show { display: block; }
+  .qr-ok { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,204,136,.2); }
+  .qr-no { background: var(--red-dim);   color: #FF9999;     border: 1px solid rgba(255,78,106,.2); }
+
+  .lesson-nav {
+    display: flex; justify-content: space-between; gap: 12px;
+    margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--border);
+  }
+  .btn-secondary {
+    padding: 11px 18px; border-radius: 9px;
+    border: 1px solid var(--border); background: none;
+    color: var(--gray); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .18s; font-family: inherit;
+  }
+  .btn-secondary:hover { border-color: var(--gray); color: var(--white); }
+  .btn-next {
+    padding: 11px 22px; border-radius: 9px;
+    background: var(--cyan); color: var(--bg);
+    font-size: 13px; font-weight: 700; border: none;
+    cursor: pointer; transition: opacity .2s; font-family: inherit;
+  }
+  .btn-next:hover { opacity: .86; }
+
+  /* ═══════════════════════════════
+     ANALYSIS PAGE
+  ═══════════════════════════════ */
+  .a-tabs {
+    display: flex; gap: 4px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; padding: 4px; margin-bottom: 26px;
+  }
+  .a-tab {
+    flex: 1; padding: 9px 14px; border-radius: 8px;
+    font-size: 13.5px; font-weight: 600; color: var(--gray);
+    cursor: pointer; transition: all .18s; border: none;
+    background: none; font-family: inherit; text-align: center;
+  }
+  .a-tab.active { background: var(--card2); color: var(--white); }
+
+  .a-panel { display: none; }
+  .a-panel.active { display: block; }
+
+  .ind-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 16px 0; }
+  .ind-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; padding: 16px; transition: border-color .2s;
+  }
+  .ind-card:hover { border-color: rgba(0,200,200,.35); }
+  .ind-abbr { font-size: 10.5px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+  .ind-name { font-size: 13.5px; font-weight: 700; margin-bottom: 7px; }
+  .ind-desc { font-size: 12.5px; color: var(--gray); line-height: 1.55; }
+
+  .pattern-list { display: flex; flex-direction: column; gap: 9px; margin: 14px 0; }
+  .pattern-item {
+    display: flex; gap: 13px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 13px;
+  }
+  .pat-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--cyan-dim); border: 1px solid rgba(0,200,200,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: var(--cyan); flex-shrink: 0;
+  }
+  .pat-info h5 { font-size: 13.5px; font-weight: 700; margin-bottom: 3px; }
+  .pat-info p  { font-size: 12.5px; color: var(--gray); line-height: 1.5; }
+
+  .fund-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 14px 0; }
+  .fund-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 11px; padding: 16px; transition: border-color .2s;
+  }
+  .fund-card:hover { border-color: rgba(0,200,200,.3); }
+  .fund-ico { font-size: 20px; margin-bottom: 9px; }
+  .fund-card h5 { font-size: 13.5px; font-weight: 700; margin-bottom: 5px; }
+  .fund-card p  { font-size: 12.5px; color: var(--gray); line-height: 1.55; }
+
+  .sessions { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+  .sess {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 15px;
+  }
+  .sess.hot { border-color: rgba(0,200,200,.35); }
+  .sess-flag { font-size: 18px; flex-shrink: 0; }
+  .sess-name { font-size: 13.5px; font-weight: 700; flex: 1; }
+  .sess-time { font-size: 12.5px; color: var(--cyan); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sess-note { font-size: 11px; color: var(--gray); margin-left: 8px; }
+
+  .pros-cons {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;
+  }
+  .pc-card { border-radius: 11px; padding: 16px; }
+  .pc-card.pro { background: var(--green-dim); border: 1px solid rgba(0,204,136,.18); }
+  .pc-card.con { background: var(--red-dim);   border: 1px solid rgba(255,78,106,.18); }
+  .pc-lbl { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+  .pc-card.pro .pc-lbl { color: var(--green); }
+  .pc-card.con .pc-lbl { color: var(--red); }
+  .pc-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .pc-list li { font-size: 12.5px; color: var(--gray-light); line-height: 1.45; }
+  .pc-list.pro li::before { content: "✓ "; color: var(--green); font-weight: 700; }
+  .pc-list.con li::before { content: "⚠ "; color: var(--red); }
+
+  /* ═══════════════════════════════
+     RISK / PSYCHOLOGY CALLOUT
+  ═══════════════════════════════ */
+  .risk-banner {
+    background: var(--card2); border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    border-radius: 11px; padding: 16px 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+    margin-top: 16px;
+  }
+  .risk-icon { font-size: 18px; flex-shrink: 0; }
+  .risk-body h5 { font-size: 13.5px; font-weight: 700; margin-bottom: 5px; color: var(--yellow); }
+  .risk-body p  { font-size: 12.5px; color: var(--gray-light); line-height: 1.6; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     TICKER BAR
+════════════════════════════════ -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack">
+    <span><span class="tp">EUR/USD</span> 1.0872 <span class="up">▲ 0.12%</span></span>
+    <span><span class="tp">GBP/USD</span> 1.2648 <span class="dn">▼ 0.08%</span></span>
+    <span><span class="tp">USD/JPY</span> 157.34 <span class="up">▲ 0.31%</span></span>
+    <span><span class="tp">USD/CAD</span> 1.3612 <span class="dn">▼ 0.14%</span></span>
+    <span><span class="tp">AUD/USD</span> 0.6541 <span class="up">▲ 0.09%</span></span>
+    <span><span class="tp">USD/CHF</span> 0.8965 <span class="dn">▼ 0.05%</span></span>
+    <span><span class="tp">NZD/USD</span> 0.6023 <span class="up">▲ 0.18%</span></span>
+    <span><span class="tp">EUR/GBP</span> 0.8596 <span class="dn">▼ 0.07%</span></span>
+    <!-- duplicate for seamless loop -->
+    <span><span class="tp">EUR/USD</span> 1.0872 <span class="up">▲ 0.12%</span></span>
+    <span><span class="tp">GBP/USD</span> 1.2648 <span class="dn">▼ 0.08%</span></span>
+    <span><span class="tp">USD/JPY</span> 157.34 <span class="up">▲ 0.31%</span></span>
+    <span><span class="tp">USD/CAD</span> 1.3612 <span class="dn">▼ 0.14%</span></span>
+    <span><span class="tp">AUD/USD</span> 0.6541 <span class="up">▲ 0.09%</span></span>
+    <span><span class="tp">USD/CHF</span> 0.8965 <span class="dn">▼ 0.05%</span></span>
+    <span><span class="tp">NZD/USD</span> 0.6023 <span class="up">▲ 0.18%</span></span>
+    <span><span class="tp">EUR/GBP</span> 0.8596 <span class="dn">▼ 0.07%</span></span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     NAVIGATION
+════════════════════════════════ -->
+<nav>
+  <div class="nav-logo" onclick="showSection('home')">
+    <div class="nav-logo-mark">N</div>
+    <div class="nav-logo-text">NPB <em>Markets</em></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active"   onclick="showSection('home')">Главная</button>
+    <button class="nav-tab"          onclick="showSection('courses')">Курсы</button>
+    <button class="nav-tab"          onclick="showSection('lesson')">Урок</button>
+    <button class="nav-tab"          onclick="showSection('analysis')">Анализ</button>
+  </div>
+  <button class="nav-cta" onclick="showSection('courses')">Открыть счёт</button>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION: HOME / ONBOARDING
+════════════════════════════════════════════════ -->
+<section class="section active" id="section-home">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+
+      <div class="hero-eyebrow">
+        <span class="pulse-dot"></span>
+        NPB Markets · Forex Services Since 1996
+      </div>
+
+      <h1>Научись торговать<br>на <em>Форекс</em><br>с нуля</h1>
+      <p class="hero-sub">Полный курс для начинающих: от валютных пар до технического анализа. Теория, примеры, квизы.</p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-n">5.3<em>T$</em></div>
+          <div class="hero-stat-l">ежедневный оборот рынка</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">36<em>+</em></div>
+          <div class="hero-stat-l">уроков в курсе</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">24<em>ч</em></div>
+          <div class="hero-stat-l">рынок Пн–Пт</div>
+        </div>
+      </div>
+
+      <!-- ONBOARDING -->
+      <div class="ob-card">
+
+        <!-- Step 1 -->
+        <div id="ob-step1">
+          <div class="ob-step-lbl">Шаг 1 из 3</div>
+          <div class="ob-progress">
+            <div class="ob-dot done"></div>
+            <div class="ob-dot"></div>
+            <div class="ob-dot"></div>
+          </div>
+          <div class="ob-q">Какой у вас опыт торговли на Форекс?</div>
+          <div class="ob-opts">
+            <button class="ob-opt" onclick="selectOb(this,'exp','none','ob-btn1')">
+              <div class="ob-radio"></div>🔰 Я полный новичок — слышал, но не торговал
+            </button>
+            <button class="ob-opt" onclick="selectOb(this,'exp','demo','ob-btn1')">
+              <div class="ob-radio"></div>📊 Торговал на демо-счёте
+            </button>
+            <button class="ob-opt" onclick="selectOb(this,'exp','real','ob-btn1')">
+              <div class="ob-radio"></div>💼 Уже торгую на реальном счёте
+            </button>
+          </div>
+          <button class="btn-primary" id="ob-btn1" disabled onclick="nextObStep(2)">Далее →</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="ob-step2" style="display:none">
+          <div class="ob-step-lbl">Шаг 2 из 3</div>
+          <div class="ob-progress">
+            <div class="ob-dot done"></div>
+            <div class="ob-dot done"></div>
+            <div class="ob-dot"></div>
+          </div>
+          <div class="ob-q">Какова ваша главная цель?</div>
+          <div class="ob-opts">
+            <button class="ob-opt" onclick="selectOb(this,'goal','learn','ob-btn2')">
+              <div class="ob-radio"></div>🎓 Изучить основы Форекс с нуля
+            </button>
+            <button class="ob-opt" onclick="selectOb(this,'goal','strategy','ob-btn2')">
+              <div class="ob-radio"></div>📈 Освоить торговые стратегии
+            </button>
+            <button class="ob-opt" onclick="selectOb(this,'goal','open','ob-btn2')">
+              <div class="ob-radio"></div>🏦 Открыть счёт и начать торговать
+            </button>
+          </div>
+          <button class="btn-primary" id="ob-btn2" disabled onclick="nextObStep(3)">Далее →</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="ob-step3" style="display:none">
+          <div class="ob-step-lbl">Шаг 3 из 3</div>
+          <div class="ob-progress">
+            <div class="ob-dot done"></div>
+            <div class="ob-dot done"></div>
+            <div class="ob-dot done"></div>
+          </div>
+          <div class="ob-q">Укажите email для доступа к курсу</div>
+          <input
+            type="email" id="ob-email" placeholder="you@example.com"
+            oninput="checkEmail()"
+            style="width:100%;padding:12px 15px;border-radius:9px;
+              border:1.5px solid var(--border);background:var(--card2);
+              color:var(--white);font-size:14px;font-family:inherit;
+              margin-top:6px;outline:none;transition:border-color .2s;"
+            onfocus="this.style.borderColor='var(--cyan)'"
+            onblur="this.style.borderColor='var(--border)'"
+          />
+          <div style="font-size:11.5px;color:var(--gray);margin-top:8px;">
+            Мы не рассылаем спам. Только прогресс и важные обновления.
+          </div>
+          <button class="btn-primary" id="ob-btn3" disabled onclick="finishOb()">
+            Начать обучение →
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION: COURSES
+════════════════════════════════════════════════ -->
+<section class="section" id="section-courses">
+  <div class="page">
+
+    <div class="page-header">
+      <div class="section-label">Ваш учебный план</div>
+      <h2>Курс по торговле на Форекс</h2>
+      <p>5 глав · 36 уроков · Уровень: начинающий</p>
+    </div>
+
+    <!-- User progress strip -->
+    <div class="user-progress">
+      <div class="user-avatar">А</div>
+      <div class="user-info">
+        <h4>Александр Новиков</h4>
+        <p>Начинающий трейдер · Присоединился сегодня</p>
+      </div>
+      <div class="xp-section">
+        <div class="xp-lbl">
+          <span>Прогресс курса</span>
+          <span style="color:var(--cyan);font-weight:700;">20%</span>
+        </div>
+        <div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div>
+      </div>
+      <div class="user-stat-row">
+        <div class="user-stat">
+          <div class="user-stat-n">7</div>
+          <div class="user-stat-l">уроков</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-n" style="color:var(--green)">3</div>
+          <div class="user-stat-l">квиза</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-n" style="color:var(--yellow)">84</div>
+          <div class="user-stat-l">очков</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter cards -->
+    <div class="chapters">
+
+      <div class="ch-card done" onclick="showSection('lesson')">
+        <div class="ch-num">✓</div>
+        <div class="ch-info">
+          <div class="ch-title">Глава 1 — Введение</div>
+          <div class="ch-sub">Что такое Форекс · История рынка · Участники · Торговля внутри дня</div>
+          <div class="ch-bar"><div class="ch-fill" style="width:100%"></div></div>
+        </div>
+        <div class="ch-meta">
+          <div class="ch-lessons">5 уроков</div>
+          <div class="ch-time">≈ 25 мин</div>
+          <div class="ch-badge b-done">✓ Пройдено</div>
+        </div>
+      </div>
+
+      <div class="ch-card curr" onclick="showSection('lesson')">
+        <div class="ch-num">02</div>
+        <div class="ch-info">
+          <div class="ch-title">Глава 2 — Основы Форекс</div>
+          <div class="ch-sub">Валюты · Цена · Графики · Индикаторы · Ордера · Пипсы · Новости</div>
+          <div class="ch-bar"><div class="ch-fill" style="width:42%"></div></div>
+        </div>
+        <div class="ch-meta">
+          <div class="ch-lessons">12 уроков</div>
+          <div class="ch-time">≈ 60 мин</div>
+          <div class="ch-badge b-curr">● В процессе</div>
+        </div>
+      </div>
+
+      <div class="ch-card" onclick="showSection('analysis')">
+        <div class="ch-num">03</div>
+        <div class="ch-info">
+          <div class="ch-title">Глава 3 — Фундаментальный анализ</div>
+          <div class="ch-sub">Экономический календарь · Торговля на новостях · Процентные ставки</div>
+          <div class="ch-bar"><div class="ch-fill" style="width:0%"></div></div>
+        </div>
+        <div class="ch-meta">
+          <div class="ch-lessons">4 урока</div>
+          <div class="ch-time">≈ 20 мин</div>
+          <div class="ch-badge b-lock">○ Следующий</div>
+        </div>
+      </div>
+
+      <div class="ch-card locked">
+        <div class="ch-num">04</div>
+        <div class="ch-info">
+          <div class="ch-title">Глава 4 — Технический анализ</div>
+          <div class="ch-sub">Тренды · Поддержка/Сопротивление · Пробои · Уровни Фибоначчи</div>
+          <div class="ch-bar"><div class="ch-fill" style="width:0%"></div></div>
+        </div>
+        <div class="ch-meta">
+          <div class="ch-lessons">11 уроков</div>
+          <div class="ch-time">≈ 55 мин</div>
+          <div class="ch-badge b-lock">🔒 Заблокировано</div>
+        </div>
+      </div>
+
+      <div class="ch-card locked">
+        <div class="ch-num">05</div>
+        <div class="ch-info">
+          <div class="ch-title">Глава 5 — Заключение</div>
+          <div class="ch-sub">Психология трейдера · Управление рисками · Выбор брокера</div>
+          <div class="ch-bar"><div class="ch-fill" style="width:0%"></div></div>
+        </div>
+        <div class="ch-meta">
+          <div class="ch-lessons">4 урока</div>
+          <div class="ch-time">≈ 20 мин</div>
+          <div class="ch-badge b-lock">🔒 Заблокировано</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Рынок Форекс в цифрах</div>
+    <div class="stat-trio">
+      <div class="stat-box">
+        <div class="stat-box-n">5.3T$</div>
+        <div class="stat-box-l">ежедневный торговый оборот</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-n">24/5</div>
+        <div class="stat-box-l">часов в сутки, Пн–Пт</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-n">90%</div>
+        <div class="stat-box-l">сделок — от спекулянтов</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION: LESSON
+════════════════════════════════════════════════ -->
+<section class="section" id="section-lesson">
+
+  <div class="lesson-bar">
+    <button class="btn-back" onclick="showSection('courses')">← К курсам</button>
+    <div class="lesson-pbar">
+      <div class="lesson-pfill" id="lesson-pfill"></div>
+    </div>
+    <div class="lesson-ptxt" id="lesson-ptxt">Урок 5 из 12</div>
+  </div>
+
+  <div class="lesson-body">
+    <div class="lesson-chapter">Глава 2 · Основы Форекс</div>
+    <div class="lesson-title">Валюты и валютные пары</div>
+
+    <!-- ── Блок 1 ── -->
+    <div class="block">
+      <h3>Как устроена торговля на Форекс</h3>
+      <p>Когда трейдеры работают на рынке Форекс, они покупают или продают <strong style="color:var(--white)">валютные пары</strong>. В каждой паре две валюты соперничают друг с другом — их обменный курс определяется силой или слабостью каждой из них.</p>
+      <p>Пара записывается как <strong style="color:var(--cyan)">Валюта1/Валюта2</strong>. Например, торговля евро против доллара США обозначается как <strong style="color:var(--cyan)">EUR/USD</strong>.</p>
+      <div class="hl-box">
+        <div class="hl-box-lbl">📌 Пример</div>
+        <p>EUR/USD = 1.0970 означает: за 1 евро дают 1.0970 доллара. Хотите купить 100 евро? Потратите 109.70 доллара.</p>
+      </div>
+    </div>
+
+    <!-- ── Блок 2: таблица пар ── -->
+    <div class="block">
+      <h3>Основные валютные пары</h3>
+      <p>Основными называют пары, где одна из валют — доллар США. Они наиболее торгуемы и обладают наибольшей ликвидностью.</p>
+      <table class="pairs-tbl">
+        <thead>
+          <tr><th>Пара</th><th>Страны</th><th>Прозвище</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>EUR/USD</td><td>Еврозона / США</td><td>Евро-доллар</td></tr>
+          <tr><td>GBP/USD</td><td>Великобритания / США</td><td>Фунт-доллар</td></tr>
+          <tr><td>USD/JPY</td><td>США / Япония</td><td>Доллар-иена</td></tr>
+          <tr><td>USD/CAD</td><td>США / Канада</td><td>Доллар-луни</td></tr>
+          <tr><td>NZD/USD</td><td>Новая Зеландия / США</td><td>Киви-доллар</td></tr>
+          <tr><td>USD/CHF</td><td>США / Швейцария</td><td>Доллар-суисси</td></tr>
+          <tr><td>AUD/USD</td><td>Австралия / США</td><td>Осси-доллар</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Блок 3: пипс ── -->
+    <div class="block">
+      <h3>Что такое пипс (пункт)?</h3>
+      <p>Пункт (пипс) — минимальная единица изменения котировки валютной пары. Большинство пар котируется до 4 знаков после запятой, некоторые (с японской иеной) — до 2 знаков.</p>
+      <div class="hl-box">
+        <div class="hl-box-lbl">Пример</div>
+        <p>EUR/USD вырос с 1.2360 до 1.2361 — это движение на <strong style="color:var(--cyan)">1 пипс</strong> (0.0001). Если брокер котирует до 5 знаков, минимальный шаг 0.00001 называется «pipette».</p>
+      </div>
+      <p style="margin-top:10px;">Стоимость пункта в долларах = (Лот × Пункт) / Курс валюты котировки к USD. Брокер обычно рассчитывает это автоматически.</p>
+    </div>
+
+    <!-- ── Блок 4: преимущества ── -->
+    <div class="block">
+      <h3>Почему трейдеры выбирают Форекс</h3>
+      <div class="benefit-grid">
+        <div class="benefit-item">
+          <div class="benefit-ico">💸</div>
+          <div class="benefit-txt"><strong>Нет комиссий</strong>Брокер зарабатывает на спреде, а не на отдельных сборах.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-ico">🕐</div>
+          <div class="benefit-txt"><strong>Рынок открыт 24 ч</strong>Торгуйте в любое удобное время, Пн–Пт.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-ico">💧</div>
+          <div class="benefit-txt"><strong>Высокая ликвидность</strong>Оборот ~5.3 трлн долларов в день.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-ico">🔬</div>
+          <div class="benefit-txt"><strong>Старт от $25</strong>Нет фиксированного размера лота для входа.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-ico">📊</div>
+          <div class="benefit-txt"><strong>Кредитное плечо</strong>Увеличьте позицию без пропорционального роста риска.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-ico">🖥️</div>
+          <div class="benefit-txt"><strong>Демо-счёт</strong>Практикуйтесь с виртуальными деньгами перед реальной торговлей.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── КВИЗ ── -->
+    <div class="quiz-block" id="quiz1">
+      <div class="quiz-lbl">🧠 Проверь себя</div>
+      <div class="quiz-q">Котировка EUR/USD = 1.0970. Сколько долларов нужно заплатить за 200 евро?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answerQuiz(this,false,'quiz1')">200.00 $</button>
+        <button class="quiz-opt" onclick="answerQuiz(this,false,'quiz1')">109.70 $</button>
+        <button class="quiz-opt" onclick="answerQuiz(this,true, 'quiz1')">219.40 $</button>
+        <button class="quiz-opt" onclick="answerQuiz(this,false,'quiz1')">10.97 $</button>
+      </div>
+      <div class="quiz-result qr-ok" id="quiz1-correct">
+        ✅ Верно! 200 × 1.0970 = 219.40 $. Котировка показывает цену одного евро в долларах — просто умножаем на количество.
+      </div>
+      <div class="quiz-result qr-no" id="quiz1-wrong">
+        ❌ Почти! EUR/USD = 1.0970 означает: 1 евро = 1.0970 доллара. Значит, за 200 евро: 200 × 1.0970 = 219.40 $.
+      </div>
+    </div>
+
+    <!-- ── Навигация урока ── -->
+    <div class="lesson-nav">
+      <button class="btn-secondary" onclick="showSection('courses')">← К курсам</button>
+      <button class="btn-next" onclick="nextLesson()">Следующий урок →</button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     SECTION: ANALYSIS
+════════════════════════════════════════════════ -->
+<section class="section" id="section-analysis">
+  <div class="page">
+
+    <div class="page-header">
+      <div class="section-label">Главы 3 и 4</div>
+      <h2>Анализ рынка Форекс</h2>
+      <p>Два подхода к прогнозированию движения цены — выбирайте или комбинируйте</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="a-tabs">
+      <button class="a-tab active" onclick="switchTab('tech')">📈 Технический анализ</button>
+      <button class="a-tab"        onclick="switchTab('fund')">📰 Фундаментальный анализ</button>
+    </div>
+
+    <!-- ── TECHNICAL PANEL ── -->
+    <div class="a-panel active" id="panel-tech">
+
+      <div class="block">
+        <h3>Что такое технический анализ?</h3>
+        <p>Технический анализ — изучение ценовых движений на основе исторических данных. Его суть: поведение людей повторяется, а значит, повторяются и фигуры на графиках. Задача — распознать фигуру и спрогнозировать следующий шаг цены.</p>
+        <p>Три типа графиков на Форекс: <strong style="color:var(--white)">линейный</strong> (быстрая оценка тренда), <strong style="color:var(--white)">бар / OHLC</strong> (цена открытия, максимум, минимум, закрытие) и <strong style="color:var(--cyan)">японские свечи</strong> — самый популярный формат, позволяющий мгновенно читать движение рынка.</p>
+      </div>
+
+      <div class="section-label">7 ключевых технических индикаторов</div>
+      <div class="ind-grid">
+        <div class="ind-card">
+          <div class="ind-abbr">Bollinger Bands</div>
+          <div class="ind-name">Полосы Боллинджера</div>
+          <div class="ind-desc">Измеряют волатильность. Полосы сужаются — пробой близко. Отскок от нижней/верхней полосы — возврат к средней.</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-abbr">MACD</div>
+          <div class="ind-name">Схождение скользящих средних</div>
+          <div class="ind-desc">Пересечение двух скользящих средних (быстрой и медленной) сигнализирует о начале нового тренда.</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-abbr">Parabolic SAR</div>
+          <div class="ind-name">Стоп и Разворот</div>
+          <div class="ind-desc">Точки ниже свечей → покупать. Точки выше → продавать. Лучше работает в сильном, чётком тренде.</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-abbr">Stochastic</div>
+          <div class="ind-name">Стохастик</div>
+          <div class="ind-desc">Шкала 0–100. Выше 80 — рынок перекуплен (сигнал на продажу). Ниже 20 — перепродан (сигнал на покупку).</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-abbr">RSI</div>
+          <div class="ind-name">Индекс относительной силы</div>
+          <div class="ind-desc">Выше 70 — перекупленность. Ниже 30 — перепроданность. При восходящем тренде RSI держится выше 50.</div>
+        </div>
+        <div class="ind-card">
+          <div class="ind-abbr">ADX</div>
+          <div class="ind-name">Индекс направленности</div>
+          <div class="ind-desc">Ниже 20 — тренд слабый. Выше 50 — тренд сильный. Не показывает направление — только силу.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-label">6 основных фигур технического анализа</div>
+      <div class="pattern-list">
+        <div class="pattern-item">
+          <div class="pat-num">1</div>
+          <div class="pat-info">
+            <h5>Двойная вершина и двойное дно</h5>
+            <p>Разворотная фигура. Двойная вершина формируется после роста — цена дважды не может пробить сопротивление. Двойное дно — зеркальная ситуация в нисходящем тренде.</p>
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pat-num">2</div>
+          <div class="pat-info">
+            <h5>Голова и плечи</h5>
+            <p>Три последовательных пика: плечо → голова (самый высокий) → плечо. Нисходящая линия шеи — надёжный сигнал смены восходящего тренда на нисходящий.</p>
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pat-num">3</div>
+          <div class="pat-info">
+            <h5>Клин (восходящий / нисходящий)</h5>
+            <p>Указывает на замедление тренда. Восходящий клин в восходящем тренде — сигнал разворота вниз. Нисходящий клин в нисходящем — разворот вверх.</p>
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pat-num">4</div>
+          <div class="pat-info">
+            <h5>Прямоугольник</h5>
+            <p>Цена консолидируется между параллельными уровнями поддержки и сопротивления. После пробоя продолжает движение в его направлении.</p>
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pat-num">5</div>
+          <div class="pat-info">
+            <h5>Вымпел</h5>
+            <p>Фигура продолжения тренда. После резкого движения цена консолидируется в виде симметричного треугольника, затем продолжает движение в том же направлении.</p>
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pat-num">6</div>
+          <div class="pat-info">
+            <h5>Треугольники (3 вида)</h5>
+            <p>Симметричный — пробой возможен в любую сторону. Восходящий — чаще пробой вверх. Нисходящий — чаще пробой вниз.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Уровни коррекции Фибоначчи</div>
+      <div class="hl-box" style="margin-top:0">
+        <div class="hl-box-lbl">Ключевые уровни</div>
+        <p>Три главных значения: <strong style="color:var(--cyan)">38.2%</strong>, <strong style="color:var(--cyan)">50%</strong>, <strong style="color:var(--cyan)">61.8%</strong>. В сильном тренде коррекция редко превышает 38.2%, в слабом — может достигать 61.8%. Большинство трейдеров используют уровни Фибоначчи в сочетании с другими инструментами для подтверждения сигнала.</p>
+      </div>
+
+    </div><!-- /panel-tech -->
+
+    <!-- ── FUNDAMENTAL PANEL ── -->
+    <div class="a-panel" id="panel-fund">
+
+      <div class="block">
+        <h3>Что такое фундаментальный анализ?</h3>
+        <p>Фундаментальный анализ изучает экономические, политические и социальные события, влияющие на обменные курсы. Его цель — понять, насколько сильна экономика страны, ведь именно это определяет спрос на её национальную валюту.</p>
+      </div>
+
+      <div class="section-label">Ключевые инструменты</div>
+      <div class="fund-grid">
+        <div class="fund-card">
+          <div class="fund-ico">📅</div>
+          <h5>Экономический календарь</h5>
+          <p>Успешный трейдер отслеживает публикации данных заранее. Большинство брокеров предоставляют актуальный календарь с прогнозами и предыдущими значениями.</p>
+        </div>
+        <div class="fund-card">
+          <div class="fund-ico">📰</div>
+          <h5>Торговля на новостях</h5>
+          <p>Сделку совершают незадолго до или сразу после выхода важных новостей. Высокая потенциальная прибыль, но и высокий риск — новости могут не оправдать прогноз.</p>
+        </div>
+        <div class="fund-card">
+          <div class="fund-ico">🏦</div>
+          <h5>Процентные ставки</h5>
+          <p>Повышение ставки центральным банком, как правило, укрепляет национальную валюту. Это один из самых мощных движущих факторов на Форекс.</p>
+        </div>
+        <div class="fund-card">
+          <div class="fund-ico">📊</div>
+          <h5>Макроэкономические данные</h5>
+          <p>CPI (инфляция), уровень безработицы, ВВП, промышленное производство, розничные продажи — все эти показатели двигают валютный рынок.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Расписание торговых сессий</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">Лучшее время для торговли — пересечение сессий: больше участников, выше волатильность и ликвидность.</p>
+      <div class="sessions">
+        <div class="sess">
+          <div class="sess-flag">🇯🇵</div>
+          <div class="sess-name">Токийская сессия</div>
+          <div class="sess-time">01:00 – 10:00</div>
+          <div class="sess-note">GMT+2</div>
+        </div>
+        <div class="sess">
+          <div class="sess-flag">🇬🇧</div>
+          <div class="sess-name">Лондонская сессия</div>
+          <div class="sess-time">09:00 – 18:00</div>
+          <div class="sess-note">GMT+2 · высокая ликвидность</div>
+        </div>
+        <div class="sess hot">
+          <div class="sess-flag">🇺🇸</div>
+          <div class="sess-name">Нью-Йоркская сессия</div>
+          <div class="sess-time">14:00 – 22:00</div>
+          <div class="sess-note">GMT+2 · ⭐ пересечение с Лондоном 14:00–18:00 — лучшее время для EUR/USD, GBP/USD</div>
+        </div>
+        <div class="sess">
+          <div class="sess-flag">🇦🇺</div>
+          <div class="sess-name">Сиднейская сессия</div>
+          <div class="sess-time">23:00 – 08:00</div>
+          <div class="sess-note">GMT+2</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Преимущества и риски</div>
+      <div class="pros-cons">
+        <div class="pc-card pro">
+          <div class="pc-lbl">✓ Преимущества</div>
+          <ul class="pc-list pro">
+            <li>Значительная прибыль за короткий срок</li>
+            <li>Понимание механизмов мировой экономики</li>
+            <li>Объяснение неожиданных движений рынка</li>
+            <li>Работает для любого горизонта инвестирования</li>
+          </ul>
+        </div>
+        <div class="pc-card con">
+          <div class="pc-lbl">⚠ Риски</div>
+          <ul class="pc-list con">
+            <li>Стратегия может быть высокорискованной</li>
+            <li>Требует изучения большого объёма информации</li>
+            <li>Ложные сигналы могут привести к крупным потерям</li>
+            <li>Новости не всегда совпадают с прогнозом</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="risk-banner">
+        <div class="risk-icon">⚠️</div>
+        <div class="risk-body">
+          <h5>Управление рисками — основа успеха</h5>
+          <p>Используйте ордер <strong style="color:var(--white)">стоп-лосс</strong> при каждой сделке. Определите заранее, какую часть депозита вы готовы потерять. Самодисциплина и следование торговому плану важнее любой стратегии.</p>
+        </div>
+      </div>
+
+    </div><!-- /panel-fund -->
+
+  </div>
+</section>
+
+
+<script>
+  // ── SECTION NAV ──
+  const SECTIONS = ['home', 'courses', 'lesson', 'analysis'];
+
+  function showSection(name) {
+    SECTIONS.forEach(s => {
+      document.getElementById('section-' + s).classList.toggle('active', s === name);
+    });
+    document.querySelectorAll('.nav-tab').forEach((t, i) => {
+      t.classList.toggle('active', SECTIONS[i] === name);
+    });
+    window.scrollTo(0, 0);
+
+    if (name === 'courses') {
+      setTimeout(() => {
+        const f = document.getElementById('xp-fill');
+        if (f) f.style.width = '20%';
+      }, 300);
+    }
+    if (name === 'lesson') {
+      setTimeout(() => {
+        const f = document.getElementById('lesson-pfill');
+        if (f) f.style.width = '40%';
+      }, 300);
+    }
+  }
+
+  // ── ONBOARDING ──
+  function selectOb(el, key, val, btnId) {
+    el.closest('.ob-opts').querySelectorAll('.ob-opt')
+      .forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById(btnId).disabled = false;
+  }
+
+  function nextObStep(n) {
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('ob-step' + i).style.display = (i === n) ? 'block' : 'none';
+    }
+  }
+
+  function checkEmail() {
+    const v = document.getElementById('ob-email').value;
+    document.getElementById('ob-btn3').disabled = !(v.includes('@') && v.length > 4);
+  }
+
+  function finishOb() {
+    showSection('courses');
+  }
+
+  // ── QUIZ ──
+  function answerQuiz(el, correct, quizId) {
+    const container = document.getElementById(quizId);
+    if (container.querySelector('.correct, .wrong')) return; // already answered
+    el.classList.add(correct ? 'correct' : 'wrong');
+    if (correct) {
+      document.getElementById(quizId + '-correct').classList.add('show');
+    } else {
+      document.getElementById(quizId + '-wrong').classList.add('show');
+      container.querySelectorAll('.quiz-opt')[2].classList.add('correct'); // highlight right answer
+    }
+  }
+
+  // ── NEXT LESSON ──
+  let lessonStep = 2;
+  function nextLesson() {
+    lessonStep = Math.min(lessonStep + 1, 12);
+    const pct = Math.round((lessonStep / 12) * 100);
+    document.getElementById('lesson-pfill').style.width = pct + '%';
+    document.getElementById('lesson-ptxt').textContent = 'Урок ' + lessonStep + ' из 12';
+    if (lessonStep >= 12) {
+      alert('🎉 Глава 2 пройдена!\n\nВ полной версии приложения откроется Глава 3: Фундаментальный анализ.');
+    }
+  }
+
+  // ── ANALYSIS TABS ──
+  function switchTab(tab) {
+    ['tech', 'fund'].forEach(t => {
+      document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    });
+    document.querySelectorAll('.a-tab').forEach((el, i) => {
+      el.classList.toggle('active', ['tech', 'fund'][i] === tab);
+    });
+  }
+
+  // ── LIVE TICKER ──
+  const tickerPairs = [
+    { name:'EUR/USD', price:1.0872, dp:4 },
+    { name:'GBP/USD', price:1.2648, dp:4 },
+    { name:'USD/JPY', price:157.34, dp:2 },
+    { name:'USD/CAD', price:1.3612, dp:4 },
+    { name:'AUD/USD', price:0.6541, dp:4 },
+    { name:'USD/CHF', price:0.8965, dp:4 },
+    { name:'NZD/USD', price:0.6023, dp:4 },
+    { name:'EUR/GBP', price:0.8596, dp:4 },
+  ];
+
+  function updateTicker() {
+    const items = tickerPairs.map(p => {
+      const delta = (Math.random() - 0.499) * (p.dp === 2 ? 0.12 : 0.0012);
+      p.price = Math.max(0.01, p.price + delta);
+      const pct = Math.abs((delta / p.price) * 100).toFixed(2);
+      const up  = delta >= 0;
+      const pr  = p.price.toFixed(p.dp);
+      return `<span><span class="tp">${p.name}</span> ${pr} <span class="${up?'up':'dn'}">${up?'▲':'▼'} ${pct}%</span></span>`;
+    });
+    const doubled = [...items, ...items].join('');
+    document.getElementById('tickerTrack').innerHTML = doubled;
+  }
+
+  // Refresh every 4 seconds (subtle live feel)
+  setInterval(updateTicker, 4000);
+</script>
+</body>
+</html>
